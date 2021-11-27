@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script>
+    <title>API geolocation</title>
+</head>
+<body>
+
+    <button id="find-me">Find my location</button>
+    <P id="response"></P>
+
+    <script>
+
+    function geoFindMe(){
+
+        const response = document.getElementById('response');
+        
+               if('geolocation' in navigator) {
+
+                /* geolocation is available */
+                navigator.geolocation.watchPosition(async position => {
+
+                    const latitude  = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    console.log(latitude);
+                    console.log(longitude);
+
+
+                    const data = { latitude, longitude};
+                    const options = {
+                        method: 'POST',
+                        body: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    };
+                    const response_1 = await fetch('/apiV1', options);
+                    const json = await response_1.json();
+                    console.log(json);
+
+                    response.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
+
+                    
+                });
+
+                } else {
+
+                    console.log('Geolocation IS NOT available');
+
+                }
+            }
+
+            document.querySelector('#find-me').addEventListener('click', geoFindMe);
+        // setInterval(getData, 1000);
+    </script>
+</body>
+</html>
